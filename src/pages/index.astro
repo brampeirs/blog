@@ -2,6 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
+import TestButton from '../components/TestButton.jsx';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 ---
 
@@ -14,6 +15,12 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 		<Header />
 		<main>
 			<h1>🧑‍🚀 Hello, From Bram!</h1>
+
+			<!-- React + Tailwind Test Component (Static) -->
+			<div style="margin: 2rem 0;">
+				<TestButton />
+			</div>
+
 			<p>
 				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
 				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
