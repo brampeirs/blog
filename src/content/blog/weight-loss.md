@@ -43,8 +43,9 @@ My diet is tuned for **low insulin and high satiety**. I choose my food based on
 
 **Fats (The Safe Fuel)**
 
-- **What:** Olive oil, nuts, avocado, fatty fish, butter.
+- **What:** Olive oil, nuts, avocado, fatty fish, butter and full-fat dairy.
 - **Impact:** **Fats barely stimulate insulin.** This is crucial: you can eat fats to stay satiated for a long time without kicking your body out of "fat-burning mode." They provide stable energy without sugar crashes.
+- **Note on Dairy**: Always buy **full-fat** yogurt, milk, and cheese. Avoid "Light" or "0% fat" versions; when manufacturers remove fat, they almost always add sugar or thickeners to fix the taste, which spikes insulin.
 
 **Proteins (The Building Block)**
 
@@ -56,14 +57,17 @@ My diet is tuned for **low insulin and high satiety**. I choose my food based on
 - **What:** Leafy greens, broccoli, cauliflower, asparagus.
 - **Impact:** Fibers slow down the absorption of carbohydrates and thus dampen the insulin spike. They fill the stomach mechanically (which quiets hunger) without a calorie load.
 
-**Sugar & Refined Carbohydrates (The Enemy)**
+**Carbohydrates**
 
-- **What:** Bread, pasta, rice, candy, soda.
-- **Impact:** These cause an explosive insulin spike, causing fat burning to stop immediately and fat storage to begin. They provide poor satiety, quickly leading to renewed hunger.
+- **Refined Carbs (The Enemy)**: White bread, white pasta, white rice, candy, soda. These cause an explosive insulin spike, stopping fat burning immediately. They provide poor satiety, leading to hunger and cravings shortly after eating.
 
-**Sweeteners**
+- **Whole Grains (The Exception)**: If you eat carbohydrates, strictly choose whole wheat or whole grain options (e.g., steel-cut oats, quinoa, whole wheat pasta). The fiber content in these foods acts as a barrier, causing a slower and lower insulin rise compared to refined grains. However, they are still energy-dense, so keep portions small.
 
-- **Impact:** Caution. Even without calories, they can trigger an insulin response (because your body tastes sweetness) and maintain sugar addiction.
+**Fruit (Nature’s Candy)**
+
+- **Impact**: We are conditioned to think all fruit is unlimitedly healthy, but modern fruit is bred to be extremely sweet. Fruit contains **fructose**, which can contribute to insulin resistance in the liver if eaten in excess.
+
+- **Strategy**: Treat fruit as a dessert, not a main course. Stick to low-sugar options like **berries** (raspberries, blackberries, strawberries) and avoid high-sugar "sugar bombs" like bananas, grapes, mangoes, and dried fruit.
 
 ### **3. Exercise – Strength Over Cardio**
 
