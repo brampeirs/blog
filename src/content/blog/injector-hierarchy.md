@@ -1,17 +1,19 @@
 ---
-title: "The Quirks of Injector Hierarchy When Using NgModules"
+title: "Injector Hierarchy: The Difference Between Eager and Lazy Loading"
 pubDate: "Jan 13 2026"
-description: "How lazy loading can silently break your Angular app by creating multiple service instances"
-heroImage: "../../assets/blog-weight-loss.png"
+description: "The difference between eager and lazy loading in Angular and how it affects your application"
+heroImage: "../../assets/blog-lazy-loading-modules.jpg"
 ---
 
-While refactoring a large Angular project that was still heavily relying on NgModules, I moved some routes from eager to lazy loading. The build succeeded without errors, but at runtime, things started behaving strangely. The recently visited products feature stopped working correctly—it was as if the app had amnesia, forgetting what users had just viewed.
+While refactoring a large Angular project that was still heavily relying on NgModules. After moving around some modules, I encountered a very strange bug. The build succeeded without errors, but at runtime, things started behaving strangely. No console errors. No TypeScript warnings. Just broken functionality.
 
-No console errors. No TypeScript warnings. Just broken functionality.
+After hours of debugging, I discovered the root cause: **a singleton service was being instantiated twice**—once in the root injector and once in a lazy-loaded module's child injector. This created two separate instances with their own isolated state, causing features that relied on shared state to silently fail. The culprit? Refactoring a module from eager to lazy loading had changed Angular's injector hierarchy, but there were no errors, no warnings—just broken functionality at runtime.
 
-It took me hours to realize what was happening: **my service was being instantiated twice**, creating two separate instances with their own isolated state. This is the story of how Angular's injector hierarchy can silently break your app when you refactor from eager to lazy loading.
+This is the story of how Angular's injector hierarchy can silently break your app when you refactor from eager to lazy loading, and how to prevent it.
 
 ## The Coffee Shop App: A Real-World Example
+
+![image of project structure where modules are imported eagerly](../../assets/coffee-shop.jpg)
 
 To demonstrate this issue, I built a simple coffee shop application. Users can browse coffees on the home page and click to view details. The app tracks recently visited products using a `RecentlyVisitedService` that maintains a list of the last 3 coffees viewed.
 
@@ -21,26 +23,24 @@ Here's the service implementation:
 @Injectable()
 export class RecentlyVisitedService {
   private readonly maxItems = 3;
-  private visitedCoffees = new BehaviorSubject<Coffee[]>([]);
+  private _visitedCoffees = signal<Coffee[]>([]);
 
-  visitedCoffees$: Observable<Coffee[]> = this.visitedCoffees.asObservable();
+  readonly visitedCoffees = this.visitedCoffees.asReadonly();
 
   addVisitedCoffee(coffee: Coffee): void {
-    const current = this.visitedCoffees.value;
-    const filtered = current.filter((c) => c.id !== coffee.id);
-    const updated = [coffee, ...filtered].slice(0, this.maxItems);
-    this.visitedCoffees.next(updated);
+    // logic to add coffee to visitedCoffees
   }
 }
 ```
 
-Simple enough, right? The service uses a `BehaviorSubject` to maintain state. When you visit a product detail page, it adds that coffee to the list. The home page displays this list so users can quickly revisit products they've viewed.
+Simple enough, right? The service uses a `signal` to maintain state. When you visit a product detail page, it adds that coffee to the list. The home page and product detail page display this list so users can quickly revisit products they've viewed.
 
 ## Scenario 1: Eager Loading (Everything Works)
 
 Initially, both the home page and product detail page were eagerly loaded:
 
 ```ts
+// app.module.ts
 const routes: Routes = [
   { path: "", component: HomeComponent },
   { path: "product/:id", component: ProductDetailComponent },
@@ -61,7 +61,7 @@ export class AppModule {}
 // product-detail.module.ts
 @NgModule({
   declarations: [ProductDetailComponent],
-  imports: [CommonModule, RouterModule, RecentlyVisitedModule], // 👈 Also uses RecentlyVisitedModule
+  imports: [CommonModule, RouterModule, RecentlyVisitedModule],
   exports: [ProductDetailComponent],
 })
 export class ProductDetailModule {}
@@ -77,11 +77,65 @@ export class ProductDetailModule {}
 export class RecentlyVisitedModule {}
 ```
 
-**What happens here?** Even though `RecentlyVisitedModule` is imported in multiple places (both `AppModule` and `ProductDetailModule`), Angular creates **only one injector** for the entire application when everything is eagerly loaded. All providers from all eagerly loaded modules get merged into this root injector.
+**What happens here?** Both the homeCompnent and productDetailComponent show the RecentlyVisitedComponent. They both have to import the **RecentlyVisitedModule** ( which provides the RecentlyVisitedService) so they can add the component to their template. Angular creates **only one injector** for the entire application when everything is eagerly loaded. All providers from all eagerly loaded modules get merged into this root injector.
 
 **Result:** You get a singleton. Both `HomeComponent` and `ProductDetailComponent` receive the same instance of `RecentlyVisitedService`. When you visit a product, it gets added to the list, and when you navigate back to home, the list is still there. ✅ Everything works perfectly.
 
 ![image of project structure where modules are imported eagerly](../../assets/blog-module-eager.jpg)
+
+> <a href="https://codesandbox.io/p/github/brampeirs/coffee-shop-eager/draft/focused-bash" target="_blank" rel="noopener noreferrer">Try it yourself: Eager Loading Demo on CodeSandbox</a> - Click on a coffee, then navigate back to see the "Recently Visited" section working correctly.
+
+### A Critical Difference: NgModule Provider Flattening vs. Modern DI
+
+This provider flattening behavior in eagerly loaded NgModules is actually **very different** from how Angular handles dependency injection in modern applications. It's important to understand this distinction because it explains why this bug is so surprising.
+
+**In modern Angular (standalone components, route providers, component providers):**
+
+If you provide the same service at multiple levels of the injector tree, you **always** get separate instances—regardless of lazy loading:
+
+```ts
+// Modern routing with providers
+const routes: Routes = [
+  {
+    path: "parent",
+    component: ParentComponent,
+    providers: [MyService], // 👈 Instance #1
+    children: [
+      {
+        path: "child",
+        component: ChildComponent,
+        providers: [MyService], // 👈 Instance #2 (always separate!)
+      },
+    ],
+  },
+];
+```
+
+The same is true for component-level providers:
+
+```ts
+@Component({
+  selector: "parent",
+  providers: [MyService], // 👈 Instance #1
+})
+export class ParentComponent {}
+
+@Component({
+  selector: "child",
+  providers: [MyService], // 👈 Instance #2 (always separate!)
+})
+export class ChildComponent {}
+```
+
+**The behavior is consistent and predictable**: Each provider declaration creates a new instance in its own injector scope. Parent and child always get separate instances.
+
+**But with NgModules and eager loading, Angular does something special:**
+
+It **flattens** all providers from eagerly loaded modules into the root injector. This means that even though `RecentlyVisitedModule` is imported in multiple places, you still get a singleton—because Angular merges everything into one injector.
+
+This flattening was meant to be helpful (share services easily!), but it creates a dangerous inconsistency: **the same code behaves differently depending on whether modules are eagerly or lazy loaded**. With eager loading, you get a singleton. With lazy loading, you get multiple instances.
+
+This is why refactoring from eager to lazy loading can silently break your app—the DI behavior fundamentally changes, but there are no warnings.
 
 ## Scenario 2: Lazy Loading (Everything Breaks)
 
@@ -119,9 +173,11 @@ Now you have:
 - **Instance #1** in the root injector (used by `HomeComponent`)
 - **Instance #2** in the lazy module's child injector (used by `ProductDetailComponent`)
 
-Each instance has its own `BehaviorSubject`, its own state, its own memory. They're completely isolated from each other.
+Each instance has its own `signal`, its own state, its own memory. They're completely isolated from each other.
 
 ![image of project structure where modules are imported lazily](../../assets/blog-module-lazy.jpg)
+
+> <a href="https://codesandbox.io/p/github/brampeirs/coffee-shop-eager/lazy" target="_blank" rel="noopener noreferrer">Try it yourself: Lazy Loading Demo on CodeSandbox</a> - Click on a coffee, then navigate back to home. Notice how the "Recently Visited" section is empty—the bug in action!
 
 ## Why This Is So Dangerous
 
