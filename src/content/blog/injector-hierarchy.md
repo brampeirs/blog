@@ -1,5 +1,5 @@
 ---
-title: "Injector Hierarchy: The Difference Between Eager and Lazy Loading"
+title: "Injector Hierarchy with Eager vs Lazy Loading Modules"
 pubDate: "Jan 13 2026"
 description: "The difference between eager and lazy loading in Angular and how it affects your application"
 heroImage: "../../assets/blog-lazy-loading-modules.png"
