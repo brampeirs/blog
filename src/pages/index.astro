@@ -1,56 +1,451 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import TestButton from '../components/TestButton.jsx';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { Image } from "astro:assets";
+import { getCollection } from "astro:content";
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import Header from "../components/Header.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+
+const recentPosts = (await getCollection("blog"))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, From Bram!</h1>
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-content">
+          <div class="hero-badge">Angular Developer</div>
+          <h1>Hi, I'm <span class="gradient-text">Bram Peirs</span></h1>
+          <p class="hero-description">
+            I write about Angular, web development, and software engineering.
+            Helping developers build better applications through clear,
+            practical content.
+          </p>
+          <div class="hero-actions">
+            <a href="/blog" class="btn btn-primary">
+              Read the Blog
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-gradient"></div>
+        </div>
+      </section>
 
-			<!-- React + Tailwind Test Component (Static) -->
-			<div style="margin: 2rem 0;">
-				<TestButton />
-			</div>
+      <!-- Recent Posts Section -->
+      <section class="recent-posts">
+        <div class="section-header">
+          <h2>Recent Articles</h2>
+          <a href="/blog" class="view-all">
+            View all
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg>
+          </a>
+        </div>
+        <div class="posts-grid">
+          {
+            recentPosts.map((post) => (
+              <article class="post-card">
+                <a href={`/blog/${post.id}/`}>
+                  {post.data.heroImage && (
+                    <div class="post-image">
+                      <Image
+                        width={720}
+                        height={360}
+                        src={post.data.heroImage}
+                        alt=""
+                      />
+                    </div>
+                  )}
+                  <div class="post-content">
+                    <div class="post-meta">
+                      <FormattedDate date={post.data.pubDate} />
+                    </div>
+                    <h3 class="post-title">{post.data.title}</h3>
+                    <p class="post-description">{post.data.description}</p>
+                  </div>
+                </a>
+              </article>
+            ))
+          }
+        </div>
+      </section>
 
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
-		</main>
-		<Footer />
-	</body>
+      <!-- About Preview Section -->
+      <section class="about-preview">
+        <div class="about-content">
+          <h2>About Me</h2>
+          <p>
+            I'm a passionate Angular developer focused on building scalable,
+            maintainable applications. Through this blog, I share insights from
+            real-world projects, covering everything from core Angular concepts
+            to advanced patterns and best practices.
+          </p>
+        </div>
+        <div class="about-stats">
+          <div class="stat">
+            <span class="stat-value">10+</span>
+            <span class="stat-label">Years Experience</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">Angular</span>
+            <span class="stat-label">Core Focus</span>
+          </div>
+          <div class="stat">
+            <span class="stat-value">Open</span>
+            <span class="stat-label">Source Contributor</span>
+          </div>
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </body>
 </html>
+
+<style>
+  /* Hero Section */
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    padding: 4rem 0 6rem;
+    min-height: 60vh;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--accent);
+    border-radius: var(--radius-lg);
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .gradient-text {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-description {
+    font-size: 1.25rem;
+    color: rgb(var(--gray));
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    max-width: 540px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.875rem 1.5rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+  }
+
+  .btn-primary {
+    background: var(--accent-gradient);
+    color: white;
+    box-shadow: var(--shadow-md);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    color: white;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: rgb(var(--gray-dark));
+    border: 2px solid rgba(var(--gray), 0.3);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .hero-visual {
+    position: relative;
+    height: 400px;
+  }
+
+  .hero-gradient {
+    position: absolute;
+    inset: 0;
+    background: var(--accent-gradient);
+    border-radius: var(--radius-2xl);
+    opacity: 0.15;
+    filter: blur(60px);
+    animation: pulse 4s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.15;
+    }
+    50% {
+      transform: scale(1.05);
+      opacity: 0.2;
+    }
+  }
+
+  /* Recent Posts Section */
+  .recent-posts {
+    padding: 4rem 0;
+  }
+
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .section-header h2 {
+    margin: 0;
+  }
+
+  .view-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 0.9375rem;
+  }
+
+  .view-all:hover svg {
+    transform: translateX(4px);
+  }
+
+  .view-all svg {
+    transition: transform var(--transition-fast);
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .post-card {
+    background: rgb(var(--surface));
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-base);
+  }
+
+  .post-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .post-card a {
+    display: block;
+    text-decoration: none;
+  }
+
+  .post-image {
+    overflow: hidden;
+  }
+
+  .post-image img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+  }
+
+  .post-card:hover .post-image img {
+    transform: scale(1.05);
+  }
+
+  .post-content {
+    padding: 1.25rem;
+  }
+
+  .post-meta {
+    font-size: 0.8125rem;
+    color: rgb(var(--gray));
+    margin-bottom: 0.5rem;
+  }
+
+  .post-title {
+    font-size: 1.0625rem;
+    color: rgb(var(--black));
+    margin: 0 0 0.5rem 0;
+    line-height: 1.4;
+  }
+
+  .post-description {
+    font-size: 0.875rem;
+    color: rgb(var(--gray));
+    margin: 0;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* About Preview Section */
+  .about-preview {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    padding: 4rem 0;
+    margin-top: 2rem;
+    border-top: 1px solid rgba(var(--gray), 0.15);
+  }
+
+  .about-content h2 {
+    margin-bottom: 1rem;
+  }
+
+  .about-content p {
+    color: rgb(var(--gray));
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .learn-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .learn-more:hover svg {
+    transform: translateX(4px);
+  }
+
+  .learn-more svg {
+    transition: transform var(--transition-fast);
+  }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .stat {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(99, 102, 241, 0.05);
+    border-radius: var(--radius-xl);
+  }
+
+  .stat-value {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 0.25rem;
+  }
+
+  .stat-label {
+    font-size: 0.8125rem;
+    color: rgb(var(--gray));
+  }
+
+  @media (max-width: 1024px) {
+    .hero {
+      grid-template-columns: 1fr;
+      text-align: center;
+      padding: 3rem 0 4rem;
+    }
+
+    .hero-description {
+      max-width: 100%;
+    }
+
+    .hero-actions {
+      justify-content: center;
+    }
+
+    .hero-visual {
+      display: none;
+    }
+
+    .posts-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .about-preview {
+      grid-template-columns: 1fr;
+    }
+
+    .about-stats {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero h1 {
+      font-size: 2.5rem;
+    }
+
+    .hero-description {
+      font-size: 1.125rem;
+    }
+
+    .about-stats {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

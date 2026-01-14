@@ -1,86 +1,274 @@
 ---
-import { Image } from 'astro:assets';
-import type { CollectionEntry } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import Header from "../components/Header.astro";
 
-type Props = CollectionEntry<'blog'>['data'];
+type Props = CollectionEntry<"blog">["data"];
 
 const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
 <html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 820px;
-				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-		</style>
-	</head>
+  <head>
+    <BaseHead title={title} description={description} />
+  </head>
 
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="prose prose-slate lg:prose-lg">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
-						</div>
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					<slot />
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
+  <body>
+    <Header />
+    <main>
+      <article class="blog-post">
+        <!-- Article Header -->
+        <header class="article-header">
+          <div class="article-meta">
+            <FormattedDate date={pubDate} />
+            {
+              updatedDate && (
+                <span class="updated">
+                  · Updated <FormattedDate date={updatedDate} />
+                </span>
+              )
+            }
+          </div>
+          <h1 class="article-title">{title}</h1>
+          <p class="article-description">{description}</p>
+        </header>
+
+        <!-- Hero Image -->
+        {
+          heroImage && (
+            <div class="hero-image">
+              <Image width={1200} height={600} src={heroImage} alt="" />
+            </div>
+          )
+        }
+
+        <!-- Article Content -->
+        <div class="article-content prose prose-lg prose-slate">
+          <slot />
+        </div>
+
+        <!-- Back to Blog -->
+        <footer class="article-footer">
+          <a href="/blog" class="back-link">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M19 12H5M12 19l-7-7 7-7"></path>
+            </svg>
+            Back to all articles
+          </a>
+        </footer>
+      </article>
+    </main>
+    <Footer />
+  </body>
 </html>
+
+<style>
+  main {
+    padding-top: 2rem;
+  }
+
+  .blog-post {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* Article Header */
+  .article-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .article-meta {
+    font-size: 0.9375rem;
+    color: rgb(var(--gray));
+    margin-bottom: 1rem;
+  }
+
+  .updated {
+    color: rgb(var(--gray));
+  }
+
+  .article-title {
+    font-size: 2.75rem;
+    line-height: 1.2;
+    margin: 0 0 1rem 0;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .article-description {
+    font-size: 1.25rem;
+    color: rgb(var(--gray));
+    line-height: 1.6;
+    margin: 0 auto;
+    max-width: 600px;
+  }
+
+  /* Hero Image */
+  .hero-image {
+    margin: 0 -1.5rem 3rem;
+  }
+
+  .hero-image img {
+    width: 100%;
+    max-width: 1000px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Article Content */
+  .article-content {
+    line-height: 1.8;
+  }
+
+  /* Prose Customizations */
+  .article-content :global(h2) {
+    font-size: 1.75rem;
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    color: rgb(var(--black));
+  }
+
+  .article-content :global(h3) {
+    font-size: 1.375rem;
+    margin-top: 2rem;
+    margin-bottom: 0.75rem;
+    color: rgb(var(--black));
+  }
+
+  .article-content :global(p) {
+    margin-bottom: 1.5rem;
+  }
+
+  .article-content :global(a) {
+    color: var(--accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .article-content :global(a:hover) {
+    color: var(--accent-dark);
+  }
+
+  .article-content :global(code) {
+    background: rgba(99, 102, 241, 0.1);
+    padding: 0.2em 0.4em;
+    border-radius: var(--radius-sm);
+    font-size: 0.875em;
+    color: var(--accent-dark);
+  }
+
+  .article-content :global(pre) {
+    background: rgb(var(--gray-dark)) !important;
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    overflow-x: auto;
+    margin: 2rem 0;
+  }
+
+  .article-content :global(pre code) {
+    background: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: 0.875rem;
+  }
+
+  .article-content :global(blockquote) {
+    border-left: 4px solid var(--accent);
+    padding: 1rem 1.5rem;
+    margin: 2rem 0;
+    background: rgba(99, 102, 241, 0.05);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-style: normal;
+  }
+
+  .article-content :global(blockquote p) {
+    margin: 0;
+  }
+
+  .article-content :global(ul),
+  .article-content :global(ol) {
+    margin-bottom: 1.5rem;
+    padding-left: 1.5rem;
+  }
+
+  .article-content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .article-content :global(img) {
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    margin: 2rem auto;
+  }
+
+  .article-content :global(hr) {
+    border: none;
+    height: 1px;
+    background: rgba(var(--gray), 0.2);
+    margin: 3rem 0;
+  }
+
+  /* Article Footer */
+  .article-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(var(--gray), 0.15);
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+    transition: gap var(--transition-fast);
+  }
+
+  .back-link:hover {
+    gap: 0.75rem;
+  }
+
+  @media (max-width: 768px) {
+    .article-title {
+      font-size: 2rem;
+    }
+
+    .article-description {
+      font-size: 1.125rem;
+    }
+
+    .hero-image {
+      margin: 0 -1rem 2rem;
+    }
+
+    .hero-image img {
+      border-radius: var(--radius-lg);
+    }
+
+    .article-content :global(h2) {
+      font-size: 1.5rem;
+    }
+
+    .article-content :global(h3) {
+      font-size: 1.25rem;
+    }
+  }
+</style>

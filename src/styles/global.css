@@ -1,50 +1,174 @@
 /*
-  The CSS in this style tag is based off of Bear Blog's default CSS.
-  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
-  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
+  Modern Blog Styles
+  A clean, attractive design with smooth gradients and modern aesthetics
  */
 
-  @import "tailwindcss";
-  @plugin "@tailwindcss/typography";
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
 
 :root {
-	--accent: #2337ff;
-	--accent-dark: #000d8a;
-	--black: 15, 18, 25;
-	--gray: 96, 115, 159;
-	--gray-light: 229, 233, 240;
-	--gray-dark: 34, 41, 57;
-	--gray-gradient: rgba(var(--gray-light), 50%), #fff;
-	--box-shadow:
-		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%), 0 16px 32px
-		rgba(var(--gray), 33%);
+	/* Primary brand colors - vibrant purple/indigo gradient theme */
+	--accent: #6366f1;
+	--accent-light: #818cf8;
+	--accent-dark: #4f46e5;
+	--accent-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+
+	/* Neutrals */
+	--black: 17, 24, 39;
+	--gray: 107, 114, 128;
+	--gray-light: 243, 244, 246;
+	--gray-dark: 31, 41, 55;
+	--white: 255, 255, 255;
+
+	/* Surface colors */
+	--surface: 255, 255, 255;
+	--surface-elevated: 249, 250, 251;
+
+	/* Gradients */
+	--hero-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	--card-gradient: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(99,102,241,0.03) 100%);
+
+	/* Shadows */
+	--shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+	--shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+	--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+	--shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+	--shadow-glow: 0 0 40px rgba(99, 102, 241, 0.15);
+
+	/* Border radius */
+	--radius-sm: 0.375rem;
+	--radius-md: 0.5rem;
+	--radius-lg: 0.75rem;
+	--radius-xl: 1rem;
+	--radius-2xl: 1.5rem;
+
+	/* Transitions */
+	--transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+	--transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
 }
 
 body {
-	
 	margin: 0;
 	padding: 0;
+	font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 	text-align: left;
-	background: linear-gradient(var(--gray-gradient)) no-repeat;
-	background-size: 100% 600px;
+	background-color: rgb(var(--surface));
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 	color: rgb(var(--gray-dark));
-	font-size: 20px;
-	line-height: 1.7;
-}
-main {
-	max-width: calc(100% - 2em);
-	margin: auto;
-	padding: 3em 1em;
+	font-size: 18px;
+	line-height: 1.75;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
-@media (max-width: 720px) {
+main {
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 2rem 1.5rem;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+	font-weight: 700;
+	line-height: 1.25;
+	color: rgb(var(--black));
+	letter-spacing: -0.025em;
+}
+
+h1 {
+	font-size: 2.5rem;
+	margin-bottom: 1rem;
+}
+
+h2 {
+	font-size: 2rem;
+}
+
+h3 {
+	font-size: 1.5rem;
+}
+
+a {
+	color: var(--accent);
+	text-decoration: none;
+	transition: color var(--transition-fast);
+}
+
+a:hover {
+	color: var(--accent-dark);
+}
+
+/* Utility Classes */
+.accent-gradient {
+	background: var(--accent-gradient);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+.card {
+	background: rgb(var(--surface));
+	border-radius: var(--radius-xl);
+	box-shadow: var(--shadow-md);
+	transition: all var(--transition-base);
+}
+
+.card:hover {
+	box-shadow: var(--shadow-xl);
+	transform: translateY(-4px);
+}
+
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0.75rem 1.5rem;
+	font-weight: 600;
+	font-size: 0.875rem;
+	border-radius: var(--radius-lg);
+	transition: all var(--transition-fast);
+	cursor: pointer;
+	border: none;
+}
+
+.btn-primary {
+	background: var(--accent-gradient);
+	color: white;
+	box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--shadow-lg);
+	color: white;
+}
+
+@media (max-width: 768px) {
 	body {
-		font-size: 18px;
+		font-size: 16px;
 	}
+
 	main {
-		padding: 1em;
+		padding: 1.5rem 1rem;
+	}
+
+	h1 {
+		font-size: 2rem;
+	}
+
+	h2 {
+		font-size: 1.5rem;
 	}
 }
 
@@ -56,12 +180,8 @@ main {
 	height: 1px;
 	width: 1px;
 	overflow: hidden;
-	/* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
 	clip: rect(1px 1px 1px 1px);
-	/* maybe deprecated but we need to support legacy browsers */
 	clip: rect(1px, 1px, 1px, 1px);
-	/* modern browsers, clip-path works inwards from each corner */
 	clip-path: inset(50%);
-	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
 	white-space: nowrap;
 }
