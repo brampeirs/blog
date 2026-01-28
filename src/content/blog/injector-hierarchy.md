@@ -5,7 +5,7 @@ description: "The difference between eager and lazy loading in Angular and how i
 heroImage: "../../assets/blog-lazy-loading-modules.png"
 ---
 
-While refactoring a large Angular project that was still heavily relying on NgModules. After moving around some modules, I encountered a very strange bug. The build succeeded without errors, but at runtime, things started behaving strangely. No console errors. No TypeScript warnings. Just broken functionality.
+While refactoring a large Angular codebase that relied heavily on NgModules, I encountered a very strange bug. The build succeeded, but at runtime the application behaved incorrectly—no console errors, no TypeScript warnings, just broken functionality.
 
 After hours of debugging, I discovered the root cause: **a singleton service was being instantiated twice**—once in the root injector and once in a lazy-loaded module's child injector. This created two separate instances with their own isolated state, causing features that relied on shared state to silently fail. The culprit? Refactoring a module from eager to lazy loading had changed Angular's injector hierarchy, but there were no errors, no warnings—just broken functionality at runtime.
 
@@ -149,7 +149,7 @@ export const routes: Routes = [
     path: "product/:id",
     loadChildren: () =>
       import("./product-detail/product-detail.module").then(
-        (m) => m.ProductDetailModule
+        (m) => m.ProductDetailModule,
       ),
   },
 ];
