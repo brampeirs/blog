@@ -46,7 +46,9 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
         }
 
         <!-- Article Content -->
-        <div class="article-content prose prose-lg prose-slate">
+        <div
+          class="article-content prose prose-lg prose-slate prose-code:before:content-none prose-code:after:content-none"
+        >
           <slot />
         </div>
 
