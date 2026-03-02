@@ -3,6 +3,7 @@ title: "How Weight Loss Really Works: Lessons from 'The Obesity Code'"
 pubDate: "Jan 12 2026"
 description: "A blog post about how to lose weight"
 heroImage: "../../assets/blog-weight-loss.png"
+tags: ["health"]
 ---
 
 ### **Obesity is a Hormonal Problem**

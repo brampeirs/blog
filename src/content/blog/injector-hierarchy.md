@@ -3,6 +3,7 @@ title: "Injector Hierarchy with Eager vs Lazy Loading Modules"
 pubDate: "Jan 13 2026"
 description: "The difference between eager and lazy loading in Angular and how it affects your application"
 heroImage: "../../assets/blog-lazy-loading-modules.png"
+tags: ["angular"]
 ---
 
 While refactoring a large Angular codebase that relied heavily on NgModules, I encountered a very strange bug. The build succeeded, but at runtime the application behaved incorrectly—no console errors, no TypeScript warnings, just broken functionality.
